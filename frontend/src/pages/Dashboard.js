@@ -1,25 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import API from "../api";
 import { useNavigate } from "react-router-dom";
-
+// import { useEffect, useState, useCallback } from "react";
 export default function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [title, setTitle] = useState("");
   const navigate = useNavigate();
 
-  const fetchTasks = async () => {
-    try {
-      const res = await API.get("/tasks");
-      setTasks(res.data);
-    } catch (err) {
-      alert("Unauthorized");
-      navigate("/");
-    }
-  };
+ const fetchTasks = useCallback(async () => {
+  try {
+    const res = await API.get("/tasks");
+    setTasks(res.data);
+  } catch (err) {
+    alert("Unauthorized");
+    navigate("/");
+  }
+}, [navigate]);
 
-  useEffect(() => {
-    fetchTasks();
-  }, []);
+useEffect(() => {
+  fetchTasks();
+}, [fetchTasks]);
 
   const addTask = async () => {
     await API.post("/tasks", { title });
